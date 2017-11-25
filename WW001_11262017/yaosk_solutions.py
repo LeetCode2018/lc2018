@@ -25,16 +25,17 @@ class Solution:
                 if i+j == target:
                     return [indexi, indexi+indexj+1]
         """
-        
-        """O(n) solution"""
+
+        """O(n) solution, """
         if len(nums) <= 1:
             return false
         sumdict = {}
-        for i in range(len(nums)):
-            if target - nums[i] in sumdict:
-                return [sumdict[target - nums[i]], i]
+        for index item in enumerate(nums):
+            if (target - item) in sumdict:
+                return [sumdict[target - item], index]
             else:
-                sumdict[nums[i]] = i
+                sumdict[item] = index
+
 
 """
 2. Add Two Numbers
@@ -45,5 +46,82 @@ You may assume the two numbers do not contain any leading zero, except the numbe
 Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
 Output: 7 -> 0 -> 8
 """
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
 
+class Solution:
+    def addTwoNumbers(self, l1, l2):
+        """
+        :type l1: ListNode
+        :type l2: ListNode
+        :rtype: ListNode
+        """
+        rootlist = currlist = ListNode(0);
+        carry = 0;
+        while l1 or l2 or carry:
+            if l1:
+                l1val = l1.val;
+                l1 = l1.next;
+            else:
+                l1val = 0;
+
+            if l2:
+                l2val = l2.val;
+                l2 = l2.next;
+            else:
+                l2val = 0;
+
+            currlist.next = ListNode((carry + l1val + l2val) % 10);
+            currlist = currlist.next;
+            """//10 is roundness of /10"""
+            carry = (carry + l1val + l2val) // 10;
+
+        return rootlist.next;
+
+
+"""
+3. Longest Substring Without Repeating Characters
+Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given "abcabcbb", the answer is "abc", which the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+"""
+
+class Solution:
+    def lengthOfLongestSubstring(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        """
+        1. O(n^2)
+           For each character, search current substring for duplicate,
+           if yes: get current longest length, and start over with that duplicated char in substring;
+           if no: current longest length + 1.
+        2. O(n)
+           Use a hash map for all char and index of current substring, so the process of search current substring can be O(1)
+        3. O(n)
+           Another O(n) idea is use a fixed list (ASCII table size: 128), which will help to reduce map size
+           to indicate existing of each character
+        """
+        maxLen = startIdx = 0;
+        charDict = {};
+        for i in range(len(s)):
+            if s[i] in charDict:
+                startIdx = max(charDict[s[i]] + 1, startIdx); #Met bug here, consider the case startIdx go back, fox ex: abba
+                if (i - startIdx + 1) > maxLen:
+                    maxLen = i - startIdx + 1;
+            else:
+                maxLen = max(maxLen, i - startIdx + 1);
+            charDict[s[i]] = i;
+
+        return maxLen;
 
