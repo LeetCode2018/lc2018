@@ -74,7 +74,7 @@ class Solution:
         while temp:
             ret *= 10;
             ret += temp % 10;
-            temp = int(temp/10);
+            temp = temp//10;
 
         if x < 0:
             ret = -ret;
@@ -108,7 +108,7 @@ class Solution:
         while temp:
             reversex *= 10
             reversex += temp%10
-            temp = int(temp/10)
+            temp = temp//10
         return reversex == x
 
 """
