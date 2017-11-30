@@ -28,23 +28,57 @@ public:
 /*************************************************
 014. Longest Common Prefix
 **************************************************/
-Write a function to find the longest common prefix string amongst an array of strings.
+/*Write a function to find the longest common prefix string amongst an array of strings.*/
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if(strs.size()==0||strs[0].size()==0) return "";
+        for(int i=0;i<strs[0].size();i++){
+            for(int j=0;j<strs.size();j++){
+                if(strs[j].size()<=i||strs[j][i]!=strs[0][i])
+                    return strs[0].substr(0, i);
+    }
+    return strs[0];
+};
+
 
 
 /*************************************************
 020. Valid Parentheses
 **************************************************/
-Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+/*Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
-The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
+The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.*/
 
-============================
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> stk;
+        for(int i=0;i<s.size();i++){
+           if((s[i]=='}'&&(stk.empt()||stk.top()!='{'))||
+              (s[i]=='}'&&(stk.empt()||stk.top()!='{'))||
+              (s[i]=='}'&&(stk.empt()||stk.top()!='{')))
+              return false;
+           else if(s[i]=='{'||s[i]=='('||s[i]=='[')
+              stk.push(s[i]);
+           else
+              stk.pop();
+        }
+        return true;  
+    }
+};
+
+
+
+
+/*============================
 Medium:	005/006/008/011/012
-============================
+============================*/
 /*************************************************
  005. Longest Palindromic Substring
 **************************************************/
-Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+/*Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
 
 Example:
 
@@ -58,7 +92,30 @@ Example:
 Input: "cbbd"
 
 Output: "bb"
+*/
 
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        if(s.size()==0) return "";
+        int m=s.size();
+        int len=1, idx=0;
+        vector<vector<int> > dp(m, vector<int> (m, false));
+        for(int i=0;i<m;i++){
+            dp[i][i]=true;
+            for(int j=0;j<i;j++){
+               if(s[i]==s[j]&&(i-j<2||dp[j+1][i-1])){
+                  dp[j][i]=true;
+                  if(i-j+1>len){
+                      len = i-j+1;
+                      idx = j;
+                  }
+               }
+            }
+         }
+         return s.substr(idx, len);   
+    }
+};
 
 /*************************************************
 006. ZigZag Conversion 
