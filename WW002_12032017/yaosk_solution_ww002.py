@@ -51,6 +51,92 @@ class Solution:
             return (mid1+mid2)/2
 
 """
+5. Longest Palindromic Substring
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+Example:
+
+Input: "babad"
+
+Output: "bab"
+
+Note: "aba" is also a valid answer.
+Example:
+
+Input: "cbbd"
+
+Output: "bb"
+"""
+class Solution:
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        '''
+        For each char, check with two directions (left and right) at same time
+        consider ood: "aba", and even: "abba"
+        '''
+        res = ""
+        for i in range(len(s)):
+            # odd
+            tmp = self.getLongestPal(s, i, i)
+            if len(tmp) > len(res):
+                res = tmp
+            # even
+            tmp = self.getLongestPal(s, i, i+1)
+            if len(tmp) > len(res):
+                res = tmp
+        return res
+
+    def getLongestPal(self, s, l, r):
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1; r += 1
+        return s[l+1:r]
+
+"""
+006. ZigZag Conversion 
+The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+
+P   A   H   N
+A P L S I I G
+Y   I   R
+And then read line by line: "PAHNAPLSIIGYIR"
+Write the code that will take a string and make this conversion given a number of rows:
+
+string convert(string text, int nRows);
+convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+"""
+class Solution:
+    def convert(self, s, numRows):
+        """
+        :type s: str
+        :type numRows: int
+        :rtype: str
+        """
+        '''
+        Use numRows lists sLine to scan s, put each line into sLine[row]
+        '''
+        sLine = [''] * numRows
+        ret = ""
+
+        if numRows <= 1 or len(s) < numRows:
+            return s
+        row, direction = 0, 1
+        for c in s:
+            sLine[row] += c
+            if row == numRows-1:
+                direction = -1
+            elif row == 0:
+                direction = 1
+            row += direction
+
+        for i in range(numRows):
+            ret += sLine[i]
+
+        return ret
+
+"""
 13. Roman to Integer - Easy
 Given a roman numeral, convert it to an integer.
 
