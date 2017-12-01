@@ -120,7 +120,7 @@ public:
 /*************************************************
 006. ZigZag Conversion 
 **************************************************/
-The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+/*The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
 
 P   A   H   N
 A P L S I I G
@@ -130,12 +130,31 @@ Write the code that will take a string and make this conversion given a number o
 
 string convert(string text, int nRows);
 convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+*/
 
+class Solution {
+public:
+    string convert(string s, int numRows) {
+      if(s.size()<=numRows||numRows==1)  return s;
+      string res="";
+      for(int i=0;i<numRows; i++){
+          int j=i;
+          while(j<s.size()){
+              res.push_back(s[j]);
+              if(i!=0&&i!=numRows-1&&(j+2*numRows-2-2*i)<s.size()){
+                  res.push_back(s[j+2*numRows-2-2*i]);
+              }
+              j=j+2*numRows-2;
+          }
+      }
+      return res;
+    }
+};
 
 /*************************************************
 008. String to Integer (atoi)
 **************************************************/
-Implement atoi to convert a string to an integer.
+/*Implement atoi to convert a string to an integer.
 
 Hint: Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.
 
@@ -151,22 +170,75 @@ The string can contain additional characters after those that form the integral 
 If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
 
 If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
+*/
+class Solution {
+public:
+    int myAtoi(string str) {
+        if(str.size()==0) return 0;
+        int i=0;
+        int m=str.size();
+        int sign=1;
+        while(i<m&&str[i]==' ') i++;
+        if(str[i]=='+'||str[i]=='-') sign=(str[i++]=='+'?1:-1);
+        int base=0;
+        for(;i<m;i++){
+            if(str[i]>'9'||str[i]<'0') break;
+            if(base>INT_MAX/10||(base==INT_MAX/10&&str[i]>'7'))
+                return sign==1?INT_MAX:INT_MIN;
+            base=base*10+str[i]-'0';
+        }
+        return sign*base;   
+    }
+};
 
 
 /*************************************************
 011. Container With Most Water
 **************************************************/
-Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+/*Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
 
 Note: You may not slant the container and n is at least 2.
+*/
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        if(height.size()==0) return 0;
+        int res=0;
+        int left=0, right=height.size()-1;
+        while(left<right){
+            res=max(res, min(height[left], height[right])*(right-left));
+            if(height[left]>height[right]) right--;
+            else left++;
+        }
+        return res;
+    }
+};
 
 
 /*************************************************
 012. Integer to Roman
 **************************************************/
-Given an integer, convert it to a roman numeral.
+/*Given an integer, convert it to a roman numeral.
 
-Input is guaranteed to be within the range from 1 to 3999.
+Input is guaranteed to be within the range from 1 to 3999.*/
+
+class Solution {
+public:
+    string intToRoman(int num) {
+        string symbols[] ={"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int  radius[]  ={1000,900,500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        int index=0;
+        string res="";
+        while(num){
+            int cnt=num/radius[index];
+            for(int i=0;i<cnt;i++) res+=symbols[index];
+            num-=radius[index]*cnt;
+            index++;
+        }
+        return res;   
+    }
+};
+
 
 
 ============================
