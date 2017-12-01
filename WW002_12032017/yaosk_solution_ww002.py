@@ -137,6 +137,42 @@ class Solution:
         return ret
 
 """
+8. String to Integer (atoi)
+Implement atoi to convert a string to an integer.
+"""
+class Solution:
+    def myAtoi(self, str):
+        """
+        :type str: str
+        :rtype: int
+        """
+        '''
+        No clear input string define!
+        '''
+        if len(str) == 0: return 0
+        ret, i, sign = 0, 0, 1
+        bMetNum = False
+        str = str.strip()
+
+        for i in range(len(str)):
+            if str[i].isdigit():
+                bMetNum = True
+                ret = 10*ret + ord(str[i]) - 48 #ord('0') == 48
+            elif str[i] == '-' and bMetNum == False:
+                bMetNum = True
+                sign = -1
+            elif str[i] == '+' and bMetNum == False:
+                bMetNum = True
+                sign = 1
+            elif bMetNum == True: #once meet number, don't accept any non-number character
+                break
+            else:
+                return 0
+        ret = max(-2147483648, min(2147483647, sign*ret))
+        return ret
+        
+
+"""
 13. Roman to Integer - Easy
 Given a roman numeral, convert it to an integer.
 
