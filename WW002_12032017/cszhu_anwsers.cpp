@@ -247,7 +247,7 @@ Hard:    004/010
 /*************************************************
 004. Median of Two Sorted Arrays
 **************************************************/
-There are two sorted arrays nums1 and nums2 of size m and n respectively.
+/*There are two sorted arrays nums1 and nums2 of size m and n respectively.
 
 Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
 
@@ -261,11 +261,31 @@ nums1 = [1, 2]
 nums2 = [3, 4]
 
 The median is (2 + 3)/2 = 2.5
+*/
+
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m=nums1.size(), n=nums2.size();
+        int k=(m+n)/2;
+        int idx1 = 0, idx2 = 0;
+        double a=0, b=0;
+        for(int i=1;i<=k+1;i++){
+            int val = idx1<m&&idx2<n?(nums1[idx1]>nums2[idx2]?nums2[idx2]:nums1[idx1]):((idx1<m)?nums1[idx1]:nums2[idx2]);
+            if(i==k) a=val;
+            if(i==k+1) b=val;
+            idx1<m&&idx2<n?(val==nums1[idx1]?idx1++:idx2++):(idx1<m?idx1++:idx2++);
+        }
+        if((m+n)%2) return b;
+        else return (a+b)/2;     
+    }
+};
 
 
 /*************************************************
 010. Regular Expression Matching
 **************************************************/
+/*
 Implement regular expression matching with support for '.' and '*'.
 
 '.' Matches any single character.
@@ -284,3 +304,24 @@ isMatch("aa", "a*") → true
 isMatch("aa", ".*") → true
 isMatch("ab", ".*") → true
 isMatch("aab", "c*a*b") → true
+
+*/
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m=s.size(), n=p.size();
+        int dp[m+1][n+1];
+        fill_n(&dp[0][0], (m+1)*(n+1), false);
+        dp[0][0]=true;
+        for(int i=0;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(j>1&&p[j-1]=='*'){
+                    dp[i][j]=dp[i][j-2]||(i>0&&dp[i-1][j]&&(s[i-1]==p[j-2]||p[j-2]=='.');
+                else
+                    dp[i][j]=i>0&&dp[i-1][j-1]&&(s[i-1]==p[i-1]||p[i-1]=='.')
+            }
+       }
+       return dp[m][n];
+    }
+};
