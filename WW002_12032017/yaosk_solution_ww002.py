@@ -171,7 +171,52 @@ class Solution:
         ret = max(-2147483648, min(2147483647, sign*ret))
         return ret
         
-        
+"""
+10. Regular Expression Matching
+mplement regular expression matching with support for '.' and '*'.
+
+'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "a*") → true
+isMatch("aa", ".*") → true
+isMatch("ab", ".*") → true
+isMatch("aab", "c*a*b") → true
+"""
+class Solution:
+    def isMatch(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: bool
+        """
+        dp = [[False] * (len(s)+1) for i in range(len(p)+1)] #+1 for the null string case
+        dp[0][0] = True #s=p=""
+        for i in range(2, len(p) + 1):#s="", p not null
+            dp[i][0] = dp[i - 2][0] and p[i - 1] == '*'
+
+        for i in range(1, len(p)+1): #loop start with p because p is the one with regular
+            for j in range(1, len(s)+1):
+                if p[i-1] == '*':
+                    dp[i][j] = dp[i-1][j] or dp[i-2][j]#case a vs ab*
+                    if p[i-2] == s[j-1] or p[i-2] == '.':
+                        dp[i][j] |= dp[i][j-1]
+                elif p[i-1] == '.' or p[i-1] == s[j-1]:
+                    dp[i][j] = dp[i-1][j-1]
+                else:
+                    dp[i][j] = False
+
+        return dp[-1][-1]
+
 """
 11. Container With Most Water
 Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
