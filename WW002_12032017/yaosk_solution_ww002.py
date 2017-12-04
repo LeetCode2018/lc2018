@@ -171,6 +171,50 @@ class Solution:
         ret = max(-2147483648, min(2147483647, sign*ret))
         return ret
         
+        
+"""
+11. Container With Most Water
+Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+
+Note: You may not slant the container and n is at least 2.
+"""
+class Solution:
+    def maxArea(self, height):
+        """
+        :type height: List[int]
+        :rtype: int
+        """
+        maxContainer = minHeight = 0
+        l, r = 0, len(height) - 1
+        while l < r:
+            minHeight = min(height[l], height[r])
+            maxContainer = max(maxContainer,  minHeight * (r - l))
+            l = l + (height[l] == minHeight)
+            r = r - (height[r] == minHeight)
+        return maxContainer
+        
+"""
+12. Integer to Roman
+Given an integer, convert it to a roman numeral.
+
+Input is guaranteed to be within the range from 1 to 3999.
+"""
+class Solution:
+    def intToRoman(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        M = ["", "M", "MM", "MMM"];
+        C = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"];
+        X = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"];
+        I = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+
+        m = math.floor(num/1000)
+        c = math.floor((num%1000)/100)
+        x = math.floor((num%100)/10)
+        i = math.floor(num%10)
+        return M[m] + C[c] + X[x] + I[i]
 
 """
 13. Roman to Integer - Easy
@@ -192,3 +236,70 @@ class Solution:
             else: #if one letter biger than later, add
                 ret += romanMap[s[i]]
         return ret
+        
+"""
+14. Longest Common Prefix
+Write a function to find the longest common prefix string amongst an array of strings.
+"""
+class Solution:
+    def longestCommonPrefix(self, strs):
+        """
+        :type strs: List[str]
+        :rtype: str
+        """
+        ret = ""
+        if not strs: return ret
+        for i in range(len(strs[0])):
+            for j in range(1, len(strs)):
+                if not strs[j] or i >= len(strs[j]): return ret
+                elif strs[j][i] != strs[0][i]:
+                    return ret;
+            ret += strs[0][i]
+        return ret
+        
+"""
+20. Valid Parentheses
+Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
+"""
+class Solution:
+    def isValid(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        leftStr = rightStr = ""
+        lastLeftStart = 0
+        if not s: return True
+        for i in range(len(s)):
+            if self.isLeft(s[i]):
+                leftStr += s[i]
+            elif self.isRight(s[i]):
+                if leftStr == "": return False
+                elif not self.isMatch(leftStr[-1], s[i]):
+                    return False
+                else:
+                    leftStr = leftStr[0:-1]
+            else:
+                return False
+
+        return leftStr == ""
+        
+    def isMatch(self, l, r):
+        if (l=='(' and r==')') or (l=='[' and r==']') or (l=='{' and r=='}'):
+            return True
+        else:
+            return False
+
+    def isRight(self, c):
+        if c==')' or c==']' or c=='}':
+            return True
+        else:
+            return False
+    
+    def isLeft(self, c):
+        if c=='(' or c=='[' or c=='{':
+            return True
+        else:
+            return False
