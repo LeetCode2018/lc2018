@@ -114,4 +114,35 @@ class Solution:
                 else: #currSum == target
                     return target
         return closestSum
-            
+
+
+"""
+23. Merge k Sorted Lists
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def mergeKLists(self, lists):
+        """
+        :type lists: List[ListNode]
+        :rtype: ListNode
+        """
+        """
+        Time complexity: O(N*logN)
+        """
+        sortedArray = []
+        sortedHead = ListNode(0)
+        currNode = sortedHead
+        for head in lists:
+            while head:
+                sortedArray.append((head.val, head))
+                head = head.next
+        sortedArray.sort(key=lambda tup: tup[0])#TODO: lambda usage
+        for node in sortedArray:
+            currNode.next = node[1]
+            currNode = currNode.next
+        return sortedHead.next
