@@ -273,21 +273,85 @@ Note:
 Given n will always be valid.
 Try to do this in one pass.
 */
-
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if(head==NULL) return NULL;
+        ListNode dummy(-1);
+        dummy.next=head;
+        ListNode *prev=&dummy;
+        ListNode *fast=head;
+        for(int i=0;i<n;i++)
+            fast=fast->next;
+        ListNode *slow=head;
+        while(fast)
+        {
+            fast=fast->next;
+            prev=slow;
+            slow=slow->next;
+        }
+        prev->next=slow->next;
+        return dummy.next;
+    }
+};
 
 ============================
 Hard:   023/025
-============================
+=
 /*************************************************
 023. Merge K Sorted Lists
 **************************************************/
 
-Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+/*Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+*/
 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        struct comp{
+          bool operator()(pair<int, ListNode*>&a, pair<int, ListNode*>&b)
+          {
+              return a.first>b.first;
+          }
+        };
+        priority_queue<pair<int, ListNode*>, vector<pair<int, ListNode*>>, comp> pq;
+        for(auto l:lists)
+        {
+            if(l) pq.push({l->val, l});
+        }
+        ListNode dummy(-1);
+        ListNode *prev=&dummy;
+        while(!pq.empty())
+        {
+            auto a=pq.top();pq.pop();
+            prev->next=a.second;
+            prev=prev->next;
+            if(a.second->next) pq.push({a.second->next->val, a.second->next});
+        }
+        return dummy.next;
+    }
+};
 
 /*************************************************
 025. Reverse Nodes in k-Group
 **************************************************/
+/*
 Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
 
 k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
@@ -302,4 +366,59 @@ Given this linked list: 1->2->3->4->5
 For k = 2, you should return: 2->1->4->3->5
 
 For k = 3, you should return: 3->2->1->4->5
+*/
 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if(head==NULL&&k<=1)return head;
+        ListNode dummy(-1);
+        ListNode *prev=&dummy;
+        prev->next=head;
+        ListNode *start=head;
+        int cnt=0;
+        ListNode *cur=head;
+        while(cur)
+        {
+            cnt++;
+            if(cnt==k)
+            {
+                ListNode *tmp=cur->next;
+                cur->next=NULL;
+                ListNode *node=reverse(start);
+                prev->next=node;
+                prev=start;
+                start->next=tmp;
+                start=tmp;
+                cur=tmp;
+                cnt=0;
+            }
+            else
+            {
+                cur=cur->next;
+            }
+        }
+        return dummy.next;
+        
+    }
+    ListNode *reverse(ListNode* head)
+    {
+        ListNode *prev=NULL;
+        while(head)
+        {
+            ListNode *tmp=head->next;
+            head->next=prev;
+            prev=head;
+            head=tmp;
+        }
+        return prev;
+    }
+};
