@@ -1,43 +1,4 @@
 """
-21. Merge Two Sorted Lists
-Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
-
-Example:
-
-Input: 1->2->4, 1->3->4
-Output: 1->1->2->3->4->4
-"""
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
-
-class Solution:
-    def mergeTwoLists(self, l1, l2):
-        """
-        :type l1: ListNode
-        :type l2: ListNode
-        :rtype: ListNode
-        """
-        ret = curr = ListNode(0)
-        while l1 and l2:
-            if l1.val <= l2.val:
-                curr.next = l1
-                l1 = l1.next
-            else:
-                curr.next = l2
-                l2 = l2.next
-            curr = curr.next
-        
-        if not l1:
-            curr.next = l2
-        if not l2:
-            curr.next = l1
-
-        return ret.next
-
-"""
 15. 3Sum
 Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
 
@@ -189,6 +150,92 @@ class Solution:
         return
 
 """
+19. Remove Nth Node From End of List
+Given a linked list, remove the nth node from the end of list and return its head.
+
+For example,
+
+   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+Note:
+Given n will always be valid.
+Try to do this in one pass.
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def removeNthFromEnd(self, head, n):
+        """
+        :type head: ListNode
+        :type n: int
+        :rtype: ListNode
+        """
+        '''
+        Define two markers, 2nd marker come after 1st behind n
+        '''
+        second = first = head
+        iLoop = 0
+        if not head:
+            return Null
+        while first and iLoop < n:
+            first = first.next
+            iLoop += 1
+        #handle the special case
+        if not first:
+            return head.next
+        while first.next:
+            first = first.next
+            second = second.next
+        if second:
+            second.next = second.next.next
+        return head
+
+"""
+21. Merge Two Sorted Lists
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+
+Example:
+
+Input: 1->2->4, 1->3->4
+Output: 1->1->2->3->4->4
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def mergeTwoLists(self, l1, l2):
+        """
+        :type l1: ListNode
+        :type l2: ListNode
+        :rtype: ListNode
+        """
+        ret = curr = ListNode(0)
+        while l1 and l2:
+            if l1.val <= l2.val:
+                curr.next = l1
+                l1 = l1.next
+            else:
+                curr.next = l2
+                l2 = l2.next
+            curr = curr.next
+        
+        if not l1:
+            curr.next = l2
+        if not l2:
+            curr.next = l1
+
+        return ret.next
+
+
+"""
 23. Merge k Sorted Lists
 Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
 """
@@ -218,3 +265,113 @@ class Solution:
             currNode.next = node[1]
             currNode = currNode.next
         return sortedHead.next
+        
+"""
+25. Reverse Nodes in k-Group
+Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
+
+You may not alter the values in the nodes, only nodes itself may be changed.
+
+Only constant memory is allowed.
+
+For example,
+Given this linked list: 1->2->3->4->5
+
+For k = 2, you should return: 2->1->4->3->5
+
+For k = 3, you should return: 3->2->1->4->5
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def reverseKGroup(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+        '''
+        reverse the list between start and end, then connect: previous -> start -> end -> afterward
+        '''
+        dummy = jump = ListNode(0)
+        l = r = head
+        dummy.next = head
+        
+        while 1:
+            iLoop = 0
+            while iLoop < k and r:
+                r = r.next
+                iLoop += 1
+            if iLoop == k:
+                pre, cur = r, l
+                for _ in range(k):
+                    cur.next, cur, pre = pre, cur.next, cur  #TODO: standard reversing
+                jump.next, jump, l = pre, l, r  # connect two k-groups
+            else:
+                return dummy.next
+
+"""
+26. Remove Duplicates from Sorted Array
+Given a sorted array, remove the duplicates in-place such that each element appear only once and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+Example:
+
+Given nums = [1,1,2],
+
+Your function should return length = 2, with the first two elements of nums being 1 and 2 respectively.
+It doesn't matter what you leave beyond the new length.
+"""
+class Solution:
+    def removeDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        endIdx = 0
+        if not nums:
+            return 0
+        for i in range(1, len(nums)):
+            if nums[i] != nums[endIdx]:
+                endIdx += 1
+                nums[endIdx] = nums[i]
+                
+        return endIdx + 1
+
+"""
+27. Remove Element
+Given an array and a value, remove all instances of that value in-place and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
+
+Example:
+
+Given nums = [3,2,2,3], val = 3,
+
+Your function should return length = 2, with the first two elements of nums being 2.
+"""
+class Solution:
+    def removeElement(self, nums, val):
+        """
+        :type nums: List[int]
+        :type val: int
+        :rtype: int
+        """
+        if not nums:
+            return 0
+
+        endIdx = 0
+        for num in nums:
+            if num != val:
+                nums[endIdx] = num
+                endIdx += 1
+        return endIdx
