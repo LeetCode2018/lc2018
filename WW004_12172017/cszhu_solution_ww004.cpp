@@ -273,14 +273,39 @@ public:
 /*************************************************
 33. Search in Rotated Sorted Array
 **************************************************/
-Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+/*Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
 
 (i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
 
 You are given a target value to search. If found in the array return its index, otherwise return -1.
 
 You may assume no duplicate exists in the array.
+*/
 
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        if(nums.size()==0) return -1;
+        int left=0,right=nums.size()-1;
+        while(left<=right)
+        {
+            int mid=left+(right-left)/2;
+            if(nums[mid]==target) return mid;         
+            else if(nums[mid]<nums[right])
+            {
+                if(nums[mid]<target&&nums[right]>=target) left=mid+1;
+                else right=mid-1;
+            }
+            else
+            {
+                if(nums[left]<=target&&nums[mid]>target)right=mid-1;
+                else left=mid+1;
+            }
+        }
+        return -1;
+        
+    }
+};
 
 ============================
 Hard:    030/032
@@ -288,6 +313,7 @@ Hard:    030/032
 /*************************************************
 30. Substring with Concatenation of All Words
 **************************************************/
+/*
 You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
 
 For example, given:
@@ -296,14 +322,63 @@ words: ["foo", "bar"]
 
 You should return the indices: [0,9].
 (order does not matter).
+*/
 
+
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        vector<int> res;
+        if(s.size()==0||words.size()==0) return res;
+        int m=words.size(), len=words[0].size();
+        if(s.size()<m*len) return res;
+        map<string, int> m1;
+        for(auto w:words)m1[w]++;
+        for(int i=0;i<=s.size()-m*len;i++)
+        {
+            map<string, int> m2;
+            for(int j=i;j<i+m*len;j+=len)
+            {
+                string tmp=s.substr(j, len);
+                if(m1.find(tmp)==m1.end()) break;
+                m2[tmp]++;
+            }
+            if(m2==m1) res.push_back(i);
+        }
+        return res;
+    }
+};
 
 /*************************************************
 32. Longest Valid Parentheses
 **************************************************/
-Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.
+/*Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.
 
 For "(()", the longest valid parentheses substring is "()", which has length = 2.
 
 Another example is ")()())", where the longest valid parentheses substring is "()()", which has length = 4.
+*/
 
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        if(s.size()==0) return 0;
+        stack<int> stk;
+        stk.push(-1);
+        int res=0;
+        for(int i=0;i<s.size();i++)
+        {
+            if(s[i]==')'&&s[stk.top()]=='(')
+            {
+                stk.pop();
+                res=max(res, i-stk.top());
+            }
+            else
+            {
+                stk.push(i);
+            }
+        }
+        return res;
+        
+    }
+};
